@@ -2,4 +2,4 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   X-Frame-Options: DENY
-  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://cool.rgo.pt; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://cool.rgo.pt; base-uri 'none'; frame-ancestors 'none'; form-action 'self'

@@ -2,7 +2,7 @@
 
 Find the longest word that fits exactly one, two, or three tokens.
 
-Play at https://tonekizer.pages.dev. Each token target has a letters-only board and an anything-goes board. No accounts, just a public nickname. First finder owns an entry; longest entries rank first.
+Play at https://tonekizer.rgo.pt. The old production Pages URL redirects here. Each token target has a letters-only board and an anything-goes board. No accounts, just a public nickname. First finder owns an entry; longest entries rank first.
 
 ## Token rules
 
@@ -33,4 +33,4 @@ npm run deploy
 
 The GitHub Actions workflow checks pushes and pull requests. Deployment is manual with `npm run deploy`; pushing to GitHub does not deploy. Database migrations remain an explicit `npm run db:remote` operation. No paid services or AI API keys are required. Usage is subject to Cloudflare's account limits. API submissions are limited to 10 per minute per hashed IP; rate-limit records expire on subsequent submissions. The browser remembers a valid nickname in localStorage and reuses it without prompting. If storage is blocked, it remembers the nickname for the current visit. Nicknames and entries are public. Nicknames do not prove identity.
 
-Static routes bypass the Worker. Leaderboard queries use a compound index and return at most 100 discoveries per board. No fake or seeded scores are published.
+Umami analytics loads from `https://cool.rgo.pt`. Static routes bypass the Worker. Leaderboard queries use a compound index and return at most 100 discoveries per board. Example discoveries were submitted through the game to seed the boards.
