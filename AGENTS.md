@@ -9,4 +9,4 @@
 - Render all user content with textContent, never HTML. Keep SQL parameterized.
 - Existing Python scripts and word lists are local research and excluded from publishing.
 - Remember a valid identifier in localStorage and reuse it without prompting. If storage is blocked, retain it for the current visit.
-- GitHub Actions runs checks on pull requests and deploys pushes to main with the CLOUDFLARE_API_TOKEN secret. Database migrations are applied explicitly before deploying schema changes.
+- GitHub Actions checks pushes and pull requests. Deployment is manual by user choice. Apply database migrations explicitly before deploying schema changes.
