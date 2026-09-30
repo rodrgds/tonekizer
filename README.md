@@ -31,6 +31,6 @@ npm run db:remote
 npm run deploy
 ```
 
-The Pages project uses direct uploads; pushes to GitHub do not automatically deploy. No paid services or AI API keys are required. Usage is subject to Cloudflare's account limits. API submissions are limited to 10 per minute per hashed IP; rate-limit records expire on subsequent submissions. Nicknames and entries are public. Nicknames do not prove identity.
+The GitHub Actions workflow checks changes and deploys pushes to `main` once the `CLOUDFLARE_API_TOKEN` repository secret is configured. The token needs Account > Cloudflare Pages > Edit for the hosting account. Pull requests run checks without deploying. Database migrations remain an explicit `npm run db:remote` operation. No paid services or AI API keys are required. Usage is subject to Cloudflare's account limits. API submissions are limited to 10 per minute per hashed IP; rate-limit records expire on subsequent submissions. The browser remembers a valid nickname in localStorage and reuses it without prompting. If storage is blocked, it remembers the nickname for the current visit. Nicknames and entries are public. Nicknames do not prove identity.
 
 Static routes bypass the Worker. Leaderboard queries use a compound index and return at most 100 discoveries per board. No fake or seeded scores are published.

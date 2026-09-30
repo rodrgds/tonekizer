@@ -4,7 +4,7 @@ import '@fontsource/dm-sans/600.css';
 import '@fontsource/dm-sans/700.css';
 import '@fontsource-variable/sora';
 import './style.css';
-import { analyze } from './game.js';
+import { analyze, nickname as validateNickname } from './game.js';
 
 const $ = id => document.getElementById(id);
 let mode = 'letters';
@@ -14,7 +14,9 @@ let busy = false;
 let boardRequest = 0;
 let pending = null;
 const tokenNames = ['zero', 'one', 'two', 'three'];
-try { $('nickname').value = localStorage.getItem('tonekizer-nickname') ?? ''; } catch { /* Storage can be blocked in private browsers. */ }
+let rememberedNickname = '';
+try { rememberedNickname = validateNickname(localStorage.getItem('tonekizer-nickname')); } catch { /* Storage may be unavailable or contain an invalid nickname. */ }
+$('nickname').value = rememberedNickname;
 
 function update() {
   current = null;
@@ -97,19 +99,27 @@ $('entry-form').addEventListener('submit', event => {
   if (!current || current.tokens !== target || busy) return;
   if (!$('identity').hidden) { save(); return; }
   pending = { word: current.word, mode };
+  if (rememberedNickname) { save(); return; }
   $('identity').hidden = false;
   $('nickname').focus();
 });
 async function save() {
   if (!pending || busy) return;
+  let name;
+  try { name = validateNickname($('nickname').value); } catch (error) {
+    $('message').textContent = error.message;
+    $('message').className = 'error';
+    return;
+  }
+  rememberedNickname = name;
+  try { localStorage.setItem('tonekizer-nickname', name); } catch { /* Keep the nickname for this visit when storage is blocked. */ }
   busy = true;
   $('save').disabled = true; $('save').textContent = 'Saving…'; $('submit').disabled = true; $('word').readOnly = true;
   $('message').textContent = '';
   try {
-    const response = await fetch('/api/scores', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...pending, nickname: $('nickname').value }) });
+    const response = await fetch('/api/scores', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...pending, nickname: name }) });
     const data = await response.json();
     if (!response.ok) throw new Error(data.error);
-    try { localStorage.setItem('tonekizer-nickname', data.nickname); } catch { /* A nickname is optional browser storage. */ }
     $('identity').hidden = true;
     $('message').textContent = `You're #${data.rank}! ${data.length} characters in ${data.tokens} ${data.tokens === 1 ? 'token' : 'tokens'}. Keep hunting.`;
     $('message').className = 'valid';

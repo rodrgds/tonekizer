@@ -8,3 +8,5 @@
 - First finder owns an identical entry within a board. Equal lengths rank by insertion order. Nicknames are public unverified labels.
 - Render all user content with textContent, never HTML. Keep SQL parameterized.
 - Existing Python scripts and word lists are local research and excluded from publishing.
+- Remember a valid identifier in localStorage and reuse it without prompting. If storage is blocked, retain it for the current visit.
+- GitHub Actions runs checks on pull requests and deploys pushes to main with the CLOUDFLARE_API_TOKEN secret. Database migrations are applied explicitly before deploying schema changes.
