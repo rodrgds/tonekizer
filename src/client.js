@@ -36,7 +36,7 @@ function update() {
       $('pieces').append(chip);
     }
     const valid = current.tokens === target;
-    $('result').textContent = valid ? `${current.tokens} ${target === 1 ? 'token' : 'tokens'}. It fits. Can you go longer?` : `${current.tokens} tokens. You need exactly ${target}.`;
+    $('result').textContent = valid ? `${current.tokens} ${target === 1 ? 'token' : 'tokens'}. It fits. Can you go longer?` : `${current.tokens} ${current.tokens === 1 ? 'token' : 'tokens'}. You need exactly ${target}.`;
     $('result').className = valid ? 'valid' : '';
     $('submit').disabled = !valid || busy;
   } catch (error) {
