@@ -1,0 +1,7 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "tonekizer",
+  "pages_build_output_dir": "./dist",
+  "compatibility_date": "2026-09-30",
+  "d1_databases": [{ "binding": "DB", "database_name": "tonekizer", "database_id": "e2edd5ad-e8fe-47c1-adf8-ed4448f6e174", "migrations_dir": "migrations" }]
+}

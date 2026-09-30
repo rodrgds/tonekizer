@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f6f5ef" />
+  <meta name="description" content="How much word can you fit in one token? Find the longest words in Tonekizer, a free tokenizer game with global leaderboards." />
+  <title>Tonekizer · More word. Fewer tokens.</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+</head>
+<body>
+  <div class="page">
+    <header><a class="brand" href="/" aria-label="Tonekizer home"><svg viewBox="0 0 28 28" aria-hidden="true"><rect x="2" y="4" width="24" height="20" rx="5" fill="currentColor"/><path d="M8 10h12M14 10v9" stroke="var(--paper)" stroke-width="3" stroke-linecap="round"/></svg>Tonekizer<span class="brand-dot">.</span></a><button class="text-button" id="rules-toggle" aria-expanded="false" aria-controls="rules">How to play <span aria-hidden="true">?</span></button></header>
+    <main>
+      <section class="game" aria-labelledby="title">
+        <h1 id="title">More word.<br><span>Fewer tokens.</span></h1>
+        <p class="intro">Find the longest word you can squeeze into <strong id="goal-text">one token</strong>.</p>
+        <div class="controls">
+          <div class="mode-switch" role="group" aria-label="Entry rules"><button data-mode="letters" aria-pressed="true">Letters only</button><button data-mode="open" aria-pressed="false">Anything goes</button></div>
+          <div class="token-switch" role="group" aria-label="Token target"><button data-tokens="1" aria-pressed="true">1 <span>token</span></button><button data-tokens="2" aria-pressed="false">2 <span>tokens</span></button><button data-tokens="3" aria-pressed="false">3 <span>tokens</span></button></div>
+        </div>
+        <form id="entry-form">
+          <label class="sr-only" for="word">Your word</label>
+          <div class="input-wrap"><input id="word" placeholder="Got a long word?" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="512" aria-describedby="entry-hint result" /><button id="submit" type="submit" disabled>Claim a spot <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h12m-5-5 5 5-5 5"/></svg></button></div>
+          <div class="input-foot"><span id="entry-hint">Any language. Letters only. Case matters.</span><span id="length">0 characters</span></div>
+          <div id="analysis" hidden><div id="pieces" aria-label="Token breakdown"></div><p id="result" role="status" aria-live="polite"></p></div>
+          <div id="identity" hidden><label for="nickname">What should we call you?</label><div class="identity-row"><input id="nickname" placeholder="Your nickname" autocomplete="nickname" maxlength="24" aria-describedby="nickname-hint"/><button id="save" type="button">Add to leaderboard</button></div><p id="nickname-hint">No account needed. Your nickname and entry will be public.</p></div>
+          <p id="message" role="status" aria-live="polite"></p>
+        </form>
+      </section>
+      <section class="leaderboard" aria-labelledby="board-title"><div class="board-heading"><h2 id="board-title">The longest finds</h2><button class="text-button" id="refresh">Refresh <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M16 7a6 6 0 1 0 0 6M16 3v4h-4"/></svg></button></div><div class="board-meta"><span id="board-label">Letters only · 1 token</span><span>Global leaderboard</span></div><div id="board" aria-live="polite"><p class="empty">Loading the leaderboard…</p></div><p class="board-note">Longest first. First finder wins a tie. Top 100 discoveries.</p></section>
+      <section id="rules" hidden aria-labelledby="rules-title"><h2 id="rules-title">A little word game. A weird little limit.</h2><p>AI reads text in chunks called tokens. A long word can be one token, while a short word can be several. Try a word, watch it split, and find the longest one.</p><ul><li>Choose exactly 1, 2, or 3 tokens.</li><li><strong>Letters only</strong> accepts letters in any language, without spaces or symbols. We don't check a dictionary.</li><li><strong>Anything goes</strong> accepts punctuation, numbers, and spaces too. Invisible and control characters are excluded.</li><li>Case and spaces change tokens. We never add a leading space or trim your entry.</li><li>Length counts Unicode code points after NFC normalization. Maximum 256 characters.</li><li>Each entry belongs to its first finder. Nicknames aren't verified identities.</li></ul><p>All boards use <a href="https://github.com/openai/tiktoken" target="_blank" rel="noreferrer">OpenAI's o200k_base encoding</a>, via gpt-tokenizer. Token pieces may show a replacement character when a token splits a Unicode character. No AI calls, just the tokenizer.</p></section>
+    </main>
+    <footer><span>A small game about big words.</span><a href="https://github.com/rodrgds/tonekizer" target="_blank" rel="noreferrer">Source code <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5M6 5h9v9"/></svg></a></footer>
+  </div>
+  <script type="module" src="/src/client.js"></script>
+</body>
+</html>

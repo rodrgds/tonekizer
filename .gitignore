@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.wrangler/
+.env*
+.dev.vars*
+.DS_Store
+# Existing local research, not part of the website.
+main.py
+wiki-100k.txt
+top_english_words_lower_1000000.txt
