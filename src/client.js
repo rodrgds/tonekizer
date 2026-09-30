@@ -64,7 +64,7 @@ async function loadBoard() {
     for (let i = 0; i < data.entries.length; i++) {
       const entry = data.entries[i];
       if (entry.length !== lastLength) {
-        const divider = document.createElement('div'); divider.className = 'length-divider'; divider.textContent = `${entry.length} characters`; $('board').append(divider); lastLength = entry.length;
+        const divider = document.createElement('div'); divider.className = 'length-divider'; divider.textContent = `${entry.length} ${entry.length === 1 ? 'character' : 'characters'}`; $('board').append(divider); lastLength = entry.length;
       }
       const row = document.createElement('div'); row.className = 'score-row';
       const rank = document.createElement('span'); rank.className = 'rank'; rank.textContent = `${i + 1}`;
