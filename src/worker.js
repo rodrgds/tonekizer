@@ -1,4 +1,5 @@
 import { analyze, nickname } from './game.js';
+import { submissionRetryAfter } from './rate-limit.js';
 
 function json(data, status = 200, extra = {}) {
   return Response.json(data, { status, headers: { 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', ...extra } });
@@ -17,6 +18,8 @@ export default {
         return json({ entries: results, mode, tokens });
       }
       if (url.pathname === '/api/scores' && request.method === 'POST') {
+        const retryAfter = await submissionRetryAfter(request, env.DB);
+        if (retryAfter) return json({ error: `Too many submissions. Try again in ${retryAfter} ${retryAfter === 1 ? 'second' : 'seconds'}.` }, 429, { 'Retry-After': String(retryAfter) });
         if (request.headers.get('Origin') && request.headers.get('Origin') !== url.origin) return json({ error: 'Submit your entry from Tonekizer.' }, 403);
         if (!request.headers.get('Content-Type')?.startsWith('application/json')) return json({ error: 'Send a JSON entry.' }, 415);
         if (Number(request.headers.get('Content-Length')) > 4096) return json({ error: 'Entry is too large.' }, 413);
@@ -31,15 +34,6 @@ export default {
           name = nickname(body.nickname);
         } catch (error) { return json({ error: error.message }, 400); }
         if (![1, 2, 3].includes(score.tokens)) return json({ error: `That's ${score.tokens} tokens. Find an entry using 1, 2, or 3.` }, 400);
-        const address = request.headers.get('CF-Connecting-IP') ?? 'local';
-        const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(address));
-        const key = [...new Uint8Array(digest)].map(byte => byte.toString(16).padStart(2, '0')).join('');
-        const minute = Math.floor(Date.now() / 60000);
-        const limits = await env.DB.batch([
-          env.DB.prepare('DELETE FROM submission_limits WHERE minute < ?').bind(minute - 1),
-          env.DB.prepare('INSERT INTO submission_limits (key, minute, attempts) VALUES (?, ?, 1) ON CONFLICT(key) DO UPDATE SET attempts = CASE WHEN minute = excluded.minute THEN attempts + 1 ELSE 1 END, minute = excluded.minute RETURNING attempts').bind(key, minute)
-        ]);
-        if (limits[1].results[0].attempts > 10) return json({ error: 'Too many submissions. Try again in a minute.' }, 429, { 'Retry-After': '60' });
         const mode = body.mode ?? 'letters';
         const inserted = await env.DB.prepare('INSERT INTO scores (mode, tokens, word, length, nickname) VALUES (?, ?, ?, ?, ?) ON CONFLICT(mode, tokens, word) DO NOTHING RETURNING id').bind(mode, score.tokens, score.word, score.length, name).first();
         if (!inserted) return json({ error: 'Already discovered! This entry keeps its first finder.' }, 409);

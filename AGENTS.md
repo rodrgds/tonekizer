@@ -7,6 +7,7 @@
 - Letters only accepts Unicode letters and marks, without a dictionary. Anything goes permits spaces and symbols. Both require exactly 1, 2, or 3 tokens.
 - First finder owns an identical entry within a board. Equal lengths rank by insertion order. Nicknames are public unverified labels.
 - Render all user content with textContent, never HTML. Keep SQL parameterized.
+- Limit every POST /api/scores attempt before body parsing using an atomic D1 bucket per hashed CF-Connecting-IP. Allow a burst of 10 and refill one allowance every 6 seconds. Return HTTP 429 with Retry-After; rejected requests must not extend the wait. Keep leaderboard reads available.
 - Existing Python scripts and word lists are local research and excluded from publishing.
 - Remember a valid identifier in localStorage and reuse it without prompting. If storage is blocked, retain it for the current visit.
 - GitHub Actions checks pushes and pull requests. Deployment is manual by user choice. Apply database migrations explicitly before deploying schema changes.

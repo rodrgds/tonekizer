@@ -7,7 +7,7 @@
     "dev": "wrangler pages dev dist --port 8788",
     "build": "vite build && esbuild src/worker.js --bundle --format=esm --platform=browser --minify --outfile=dist/_worker.js",
     "deploy": "npm run build && wrangler pages deploy dist --project-name=tonekizer",
-    "test": "wrangler d1 execute tonekizer --local --command=\"DELETE FROM scores; DELETE FROM submission_limits;\" && node --test test/*.test.js",
+    "test": "wrangler d1 execute tonekizer --local --command=\"DELETE FROM scores; DELETE FROM submission_limits; DELETE FROM submission_buckets;\" && node --test test/*.test.js",
     "db:local": "wrangler d1 migrations apply tonekizer --local",
     "db:remote": "wrangler d1 migrations apply tonekizer --remote"
   },

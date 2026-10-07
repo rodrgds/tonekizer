@@ -1,8 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 const base = 'http://localhost:8788';
+let player = 0;
 async function submit(word, mode = 'letters', name = 'tester') {
-  const response = await fetch(`${base}/api/scores`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ word, mode, nickname: name, tokens: 1, length: 9999 }) });
+  const response = await fetch(`${base}/api/scores`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'CF-Connecting-IP': `198.51.100.${++player}` }, body: JSON.stringify({ word, mode, nickname: name, tokens: 1, length: 9999 }) });
   return { status: response.status, data: await response.json() };
 }
 
@@ -45,8 +46,20 @@ test('leaderboard sorts by length, then discovery order; boards remain separate'
   assert.ok(!board.entries.some(entry => entry.word === '!!!!!!!!'));
 });
 
-test('submission flood is bounded', async () => {
-  let result;
-  for(let i=0;i<11;i++) result = await submit('hello');
-  assert.equal(result.status,429);
+test('invalid submission floods are bounded, isolated by IP, and recover after Retry-After', async () => {
+  const attempt = address => fetch(`${base}/api/scores`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json', 'CF-Connecting-IP': address }, body: '{'
+  });
+  const responses = await Promise.all(Array.from({ length: 15 }, () => attempt('192.0.2.10')));
+  assert.equal(responses.filter(response => response.status === 400).length, 10);
+  assert.equal(responses.filter(response => response.status === 429).length, 5);
+  const blocked = responses.find(response => response.status === 429);
+  const retryAfter = Number(blocked.headers.get('Retry-After'));
+  assert.ok(retryAfter >= 1 && retryAfter <= 6);
+  assert.match((await blocked.json()).error, /Try again in \d+ seconds?\./);
+  assert.equal((await attempt('192.0.2.11')).status, 400);
+  assert.equal((await fetch(`${base}/api/leaderboard`)).status, 200);
+  await new Promise(resolve => setTimeout(resolve, retryAfter * 1000 + 100));
+  assert.equal((await attempt('192.0.2.10')).status, 400);
+  assert.equal((await attempt('192.0.2.10')).status, 429);
 });
