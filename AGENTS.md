@@ -11,4 +11,5 @@
 - Existing Python scripts and word lists are local research and excluded from publishing.
 - Remember a valid identifier in localStorage and reuse it without prompting. If storage is blocked, retain it for the current visit.
 - GitHub Actions checks pushes and pull requests. Deployment is manual by user choice. Apply database migrations explicitly before deploying schema changes.
+- Preview deployments bind only `tonekizer-preview`, never the production D1 database. Use `wrangler d1 migrations apply DB --remote --env preview` for preview schema updates. Keep the production binding unchanged when editing preview configuration.
 - Canonical public URL is `https://tonekizer.rgo.pt`. Cloudflare account Bulk Redirect list `tonekizer_redirect` redirects the production pages.dev hostname, preserving paths and queries. Umami uses `https://cool.rgo.pt`; keep script-src and connect-src restricted to that origin and self.

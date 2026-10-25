@@ -2,7 +2,7 @@ import { analyze, nickname } from './game.js';
 import { submissionRetryAfter } from './rate-limit.js';
 
 function json(data, status = 200, extra = {}) {
-  return Response.json(data, { status, headers: { 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', ...extra } });
+  return Response.json(data, { status, headers: { 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', 'Strict-Transport-Security': 'max-age=31536000', ...extra } });
 }
 
 export default {
